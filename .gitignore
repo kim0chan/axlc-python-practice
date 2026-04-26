@@ -1,0 +1,16 @@
+*.log
+*.zip
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+gen/
+
+# Environment Variables
+.env
+
+# OS specific files
+Thumbs.db
+.DS_Store
+desktop.ini
