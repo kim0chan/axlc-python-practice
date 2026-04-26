@@ -44,8 +44,8 @@ def main():
             ai_response = client.ask(messages)
 
         # 🌟 5. AI 응답 출력 및 히스토리에 추가
-        print_message("ai", ai_response)
-        messages.append(ChatMessage(role="assistant", content=ai_response))
+        print_message(ai_response)
+        messages.append(ai_response)
 
 if __name__ == "__main__":
     main()

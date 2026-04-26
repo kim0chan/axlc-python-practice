@@ -3,6 +3,9 @@ import time
 import threading
 from contextlib import contextmanager
 
+from common.llm.models import ChatMessage
+
+
 # 1. ANSI 색상 상수
 class ConsoleColor:
     RESET = "\033[0m"
@@ -53,19 +56,20 @@ def loading_spinner(message: str = "LLM은 생각 중..."):
         spinner.stop_event.set()
         spinner.join()
 
-def print_message(role: str, content: str):
+def print_message(message: ChatMessage):
     """
     역할에 따라 ANSI 코드를 입혀서 출력
     """
-    role_upper = role.upper()
-    if role == "ai":
+    role = message.role.upper()
+
+    if role == "ASSISTANT":
         color = ConsoleColor.PURPLE
-    elif role == "user":
+    elif role == "USER":
         color = ConsoleColor.BLUE
     else:
         color = ConsoleColor.GRAY
     
-    print(f"\n{ConsoleColor.BOLD}{color}[{role_upper}]{ConsoleColor.RESET}: {content}\n")
+    print(f"\n{ConsoleColor.BOLD}{color}[{role}]{ConsoleColor.RESET}: {message.content}\n")
 
 def print_info(message: str):
     print(f"{ConsoleColor.CYAN}ℹ️ {message}{ConsoleColor.RESET}")

@@ -20,9 +20,9 @@ class OpenAiLlmClient(LlmClient):
         self.api_url = api_url
         self.model_name = model_name
 
-    def ask(self, messages: List[ChatMessage]) -> str:
+    def ask(self, messages: List[ChatMessage]) -> ChatMessage:
         response = self.ask_with_tools(messages)
-        return response.content or ""
+        return response
 
     def ask_with_tools(self, messages: List[ChatMessage], tools: Optional[List[Any]] = None) -> ChatMessage:
         """

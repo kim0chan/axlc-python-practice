@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from common.llm.openai_client import OpenAiLlmClient
 from common.llm.models import ChatMessage
-from common.ui import console, loading_spinner, print_message, print_info, ConsoleColor
+from common.ui import console, loading_spinner, print_message, print_info
 
 def main():
     """
@@ -34,7 +34,7 @@ def main():
             ai_response = client.ask(messages)
 
         # 4. 응답 출력
-        print_message("ai", ai_response)
+        print_message(ai_response)
 
 if __name__ == "__main__":
     main()
