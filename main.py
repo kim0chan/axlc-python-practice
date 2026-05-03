@@ -21,6 +21,7 @@ def show_menu():
     steps = {
         "0": ("Step 0: Stateless Chat (첫 API 호출)", "step0.stateless_chat"),
         "1": ("Step 1: Context Chat (대화 맥락 관리)", "step1.context_chat"),
+        "2": ("Step 2: Agentic RAG (지식 기반 대화)", "step2.main"),
         "q": ("종료하기", None)
     }
 

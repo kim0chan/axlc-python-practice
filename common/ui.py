@@ -83,10 +83,12 @@ def print_warning(message: str):
 # main.py 등에서 사용할 console 객체 호환용
 class SimpleConsole:
     def print(self, message: str, **kwargs):
-        msg = message.replace("[bold cyan]", f"{ConsoleColor.BOLD}{ConsoleColor.CYAN}") \
-                     .replace("[bold magenta]", f"{ConsoleColor.BOLD}{ConsoleColor.PURPLE}") \
-                     .replace("[bold blue]", f"{ConsoleColor.BOLD}{ConsoleColor.BLUE}") \
-                     .replace("[/]", f"{ConsoleColor.RESET}")
+        msg = (message
+                .replace("[bold cyan]", f"{ConsoleColor.BOLD}{ConsoleColor.CYAN}")
+                .replace("[bold magenta]", f"{ConsoleColor.BOLD}{ConsoleColor.PURPLE}")
+                .replace("[bold blue]", f"{ConsoleColor.BOLD}{ConsoleColor.BLUE}")
+                .replace("[bold yellow]", f"{ConsoleColor.BOLD}{ConsoleColor.YELLOW}")
+                .replace("[/]", f"{ConsoleColor.RESET}"))
         print(msg)
 
     def input(self, prompt: str) -> str:
