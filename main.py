@@ -22,6 +22,7 @@ def show_menu():
         "0": ("Step 0: Stateless Chat (첫 API 호출)", "step0.stateless_chat"),
         "1": ("Step 1: Context Chat (대화 맥락 관리)", "step1.context_chat"),
         "2": ("Step 2: Agentic RAG (지식 기반 대화)", "step2.main"),
+        "3": ("Step 3: Primitive Agent (원시 에이전트)", "step3.primitive_agent"),
         "q": ("종료하기", None)
     }
 

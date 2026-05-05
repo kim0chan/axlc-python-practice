@@ -1,6 +1,9 @@
 *.log
 *.zip
 
+# pycache
+*.pyc
+
 # IntelliJ IDEA
 .idea/
 *.iml

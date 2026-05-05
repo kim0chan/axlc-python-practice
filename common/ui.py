@@ -1,6 +1,7 @@
 import sys
 import time
 import threading
+from typing import Any
 from contextlib import contextmanager
 
 from common.llm.models import ChatMessage
@@ -80,16 +81,25 @@ def print_success(message: str):
 def print_warning(message: str):
     print(f"{ConsoleColor.YELLOW}⚠ {message}{ConsoleColor.RESET}")
 
+from rich.console import Console as RichConsole
+
 # main.py 등에서 사용할 console 객체 호환용
 class SimpleConsole:
-    def print(self, message: str, **kwargs):
-        msg = (message
-                .replace("[bold cyan]", f"{ConsoleColor.BOLD}{ConsoleColor.CYAN}")
-                .replace("[bold magenta]", f"{ConsoleColor.BOLD}{ConsoleColor.PURPLE}")
-                .replace("[bold blue]", f"{ConsoleColor.BOLD}{ConsoleColor.BLUE}")
-                .replace("[bold yellow]", f"{ConsoleColor.BOLD}{ConsoleColor.YELLOW}")
-                .replace("[/]", f"{ConsoleColor.RESET}"))
-        print(msg)
+    def __init__(self):
+        self._rich_console = RichConsole()
+
+    def print(self, message: Any, **kwargs):
+        if isinstance(message, str):
+            msg = (message
+                    .replace("[bold cyan]", f"{ConsoleColor.BOLD}{ConsoleColor.CYAN}")
+                    .replace("[bold magenta]", f"{ConsoleColor.BOLD}{ConsoleColor.PURPLE}")
+                    .replace("[bold blue]", f"{ConsoleColor.BOLD}{ConsoleColor.BLUE}")
+                    .replace("[bold yellow]", f"{ConsoleColor.BOLD}{ConsoleColor.YELLOW}")
+                    .replace("[dim]", f"{ConsoleColor.GRAY}")
+                    .replace("[/]", f"{ConsoleColor.RESET}"))
+            print(msg)
+        else:
+            self._rich_console.print(message, **kwargs)
 
     def input(self, prompt: str) -> str:
         # 프롬프트에 색깔 입히기
