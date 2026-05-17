@@ -17,6 +17,12 @@ class UpdateMeetingRequest(BaseModel):
 class DeleteMeetingRequest(BaseModel):
     id: int = Field(description="취소할 예약의 고유 ID (예약 번호)")
 
+class EmptyRequest(BaseModel):
+    """
+    파라미터가 필요 없는 요청을 위한 빈 모델
+    """
+    pass
+
 class MeetingService:
     """
     가상의 미팅 예약 시스템 (In-memory DB)
@@ -52,7 +58,7 @@ class MeetingService:
             return f"SUCCESS: 예약 번호 {req.id}번이 취소되었습니다."
         return f"ERROR: 해당 예약 번호({req.id})가 존재하지 않습니다."
 
-    def get_meeting_list(self, _=None) -> str:
+    def get_meeting_list(self, req: EmptyRequest) -> str:
         meetings = self.find_all_meetings()
         if not meetings:
             return "현재 예약된 미팅이 없습니다."
