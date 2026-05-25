@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from common.llm.openai_client import OpenAiLlmClient
 from common.llm.models import ChatMessage
-from common.ui import console, print_message, print_info, loading_spinner, ConsoleColor
+from common.ui import console, print_message, print_info, loading_spinner, Theme
 from step3.meeting_service import MeetingService, CreateMeetingRequest
 from rich.panel import Panel
 from rich.table import Table
@@ -83,7 +83,7 @@ def execute_action(command: str) -> str:
 def main():
     client = OpenAiLlmClient()
     
-    console.print("\n[bold cyan]=== [Step 3] 원시 에이전트: 스마트 오피스 비서 ===[/]")
+    console.print_header("[Step 3] 원시 에이전트: 스마트 오피스 비서")
     print_info("목표: 미팅 예약에 필요한 정보를 수집하여 예약을 실행합니다.\n")
     
     print_meeting_list()
@@ -92,7 +92,7 @@ def main():
 
     while True:
         # 사용자 입력
-        user_input = console.input(f"\n[bold blue][User]: [/]")
+        user_input = console.input("[User]: ")
         
         if user_input.lower() == "exit":
             print_info("대화를 종료합니다. Bye!")
@@ -106,19 +106,19 @@ def main():
         # 🌟 판단 결과 분석
         if response.content.startswith("NEED_INFO:"):
             question = response.content.replace("NEED_INFO:", "").strip()
-            console.print(f"\n[bold yellow][Need Info][/] {question}")
+            console.print(f"[Need Info] {question}", style=Theme.WARNING)
             messages.append(ChatMessage(role="assistant", content=response.content))
             
         elif response.content.startswith("EXECUTE:"):
-            console.print(f"\n[bold magenta][Agent Action][/] 명령을 인식했습니다! 시스템을 호출합니다...")
-            console.print(f"[dim]>> {response.content}[/]")
+            console.print("[Agent Action] 명령을 인식했습니다! 시스템을 호출합니다...", style=Theme.ASSISTANT)
+            console.print(f">> {response.content}", style=Theme.SYSTEM)
             
             # 실제 액션 실행
             result = execute_action(response.content)
             
             # 실행 결과 출력 및 반영
             print_meeting_list()
-            console.print(f"[bold cyan][System][/] {result}")
+            console.print(f"[System] {result}", style=Theme.INFO)
 
             # 실행 결과를 다시 히스토리에 추가
             messages.append(ChatMessage(role="assistant", content=response.content))

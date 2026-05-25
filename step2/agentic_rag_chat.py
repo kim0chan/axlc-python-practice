@@ -1,7 +1,7 @@
 import os
 from common.llm.client import LlmClient
 from common.llm.models import ChatMessage
-from common.ui import console, print_message, print_info, loading_spinner
+from common.ui import console, print_message, print_info, loading_spinner, Theme
 
 class AgenticRagChat:
     def __init__(self, llm_client: LlmClient):
@@ -13,11 +13,11 @@ class AgenticRagChat:
         ]
 
     def start(self):
-        console.print("\n[bold cyan]>>> Agentic RAG Chatbot 시작 (exit 입력 시 종료)[/]\n")
+        console.print_header("Agentic RAG Chatbot 시작 (exit 입력 시 종료)")
 
         while True:
             # 1. 사용자 입력 받기
-            user_input = console.input(f"[bold blue][User]: [/]")
+            user_input = console.input("[User]: ")
             if user_input.lower() == "exit":
                 print_info("대화를 종료합니다. Bye!")
                 break
@@ -27,11 +27,11 @@ class AgenticRagChat:
             context = ""
 
             if selected_file != "NONE" and os.path.exists(os.path.join(self.kb_dir, selected_file)):
-                console.print(f"[bold yellow]>>> 지식 탐색 중...[/] [[bold cyan]{selected_file}[/]] 파일을 읽습니다.")
+                console.print(f">>> 지식 탐색 중... [{selected_file}] 파일을 읽습니다.", style=Theme.INFO)
                 with open(os.path.join(self.kb_dir, selected_file), "r", encoding="utf-8") as f:
                     context = f.read()
             else:
-                console.print("[bold yellow]>>> 관련 지식을 찾지 못했습니다. 일반 답변을 생성합니다.")
+                console.print(">>> 관련 지식을 찾지 못했습니다. 일반 답변을 생성합니다.", style=Theme.WARNING)
 
             # 3. Generator: 문맥 주입 후 답변 생성
             if context:

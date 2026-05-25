@@ -22,11 +22,11 @@ def main():
         ChatMessage(role="system", content="당신은 유능한 파이썬 전문가입니다. 질문에 대해 친절하고 명확하게 답변하세요.")
     ]
 
-    console.print("\n[bold cyan]=== [Step 1] 맥락을 기억하는 LLM 대화 (종료하려면 'exit' 입력) ===[/]\n")
+    console.print_header("[Step 1] 맥락을 기억하는 LLM 대화 (종료하려면 'exit' 입력)")
 
     while True:
-        # 2. 사용자 입력 받기 (색깔 입히기!)
-        user_input = console.input(f"[bold blue][User]: [/]")
+        # 2. 사용자 입력 받기 (테마 적용)
+        user_input = console.input("[User]: ")
 
         if user_input.lower() == "exit":
             print_info("대화를 종료합니다. Bye!")

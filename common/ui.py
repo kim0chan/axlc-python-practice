@@ -29,6 +29,18 @@ class ConsoleColor:
 
 ConsoleColor.init()
 
+# 2. 테마 정의 (UI 일관성을 위해 추가)
+class Theme:
+    HEADER = f"{ConsoleColor.BOLD}{ConsoleColor.CYAN}"
+    USER = f"{ConsoleColor.BOLD}{ConsoleColor.BLUE}"
+    ASSISTANT = f"{ConsoleColor.BOLD}{ConsoleColor.PURPLE}"
+    SYSTEM = f"{ConsoleColor.GRAY}"
+    INFO = f"{ConsoleColor.CYAN}"
+    SUCCESS = f"{ConsoleColor.GREEN}"
+    WARNING = f"{ConsoleColor.YELLOW}"
+    ERROR = f"{ConsoleColor.RED}"
+    RESET = ConsoleColor.RESET
+
 class SpinnerThread(threading.Thread):
     def __init__(self, message: str):
         super().__init__(daemon=True)
@@ -64,22 +76,25 @@ def print_message(message: ChatMessage):
     role = message.role.upper()
 
     if role == "ASSISTANT":
-        color = ConsoleColor.PURPLE
+        style = Theme.ASSISTANT
     elif role == "USER":
-        color = ConsoleColor.BLUE
+        style = Theme.USER
     else:
-        color = ConsoleColor.GRAY
+        style = Theme.SYSTEM
     
-    print(f"\n{ConsoleColor.BOLD}{color}[{role}]{ConsoleColor.RESET}: {message.content}\n")
+    print(f"\n{style}[{role}]{Theme.RESET}: {message.content}\n")
 
 def print_info(message: str):
-    print(f"{ConsoleColor.CYAN}ℹ️ {message}{ConsoleColor.RESET}")
+    print(f"{Theme.INFO}ℹ️ {message}{Theme.RESET}")
 
 def print_success(message: str):
-    print(f"{ConsoleColor.GREEN}✅ {message}{ConsoleColor.RESET}")
+    print(f"{Theme.SUCCESS}✅ {message}{Theme.RESET}")
 
 def print_warning(message: str):
-    print(f"{ConsoleColor.YELLOW}⚠ {message}{ConsoleColor.RESET}")
+    print(f"{Theme.WARNING}⚠ {message}{Theme.RESET}")
+
+def print_error(message: str):
+    print(f"{Theme.ERROR}❌ {message}{Theme.RESET}")
 
 from rich.console import Console as RichConsole
 
@@ -88,24 +103,29 @@ class SimpleConsole:
     def __init__(self):
         self._rich_console = RichConsole()
 
-    def print(self, message: Any, **kwargs):
+    def print(self, message: Any, style: str = None, **kwargs):
         if isinstance(message, str):
-            msg = (message
-                    .replace("[bold cyan]", f"{ConsoleColor.BOLD}{ConsoleColor.CYAN}")
-                    .replace("[bold magenta]", f"{ConsoleColor.BOLD}{ConsoleColor.PURPLE}")
-                    .replace("[bold blue]", f"{ConsoleColor.BOLD}{ConsoleColor.BLUE}")
-                    .replace("[bold yellow]", f"{ConsoleColor.BOLD}{ConsoleColor.YELLOW}")
-                    .replace("[dim]", f"{ConsoleColor.GRAY}")
-                    .replace("[/]", f"{ConsoleColor.RESET}"))
-            print(msg)
+            if style:
+                print(f"{style}{message}{Theme.RESET}")
+            else:
+                # 하위 호환성을 위해 기본적인 rich 태그만 일부 지원하되, 점진적으로 제거 권장
+                msg = (message
+                        .replace("[bold cyan]", Theme.HEADER)
+                        .replace("[bold magenta]", Theme.ASSISTANT)
+                        .replace("[bold blue]", Theme.USER)
+                        .replace("[bold yellow]", Theme.WARNING)
+                        .replace("[dim]", Theme.SYSTEM)
+                        .replace("[/]", Theme.RESET))
+                print(msg)
         else:
             self._rich_console.print(message, **kwargs)
 
-    def input(self, prompt: str) -> str:
-        # 프롬프트에 색깔 입히기
-        msg = prompt.replace(f"[bold blue]", f"{ConsoleColor.BOLD}{ConsoleColor.BLUE}") \
-                    .replace("[/]", f"{ConsoleColor.RESET}")
-        return input(msg)
+    def print_header(self, message: str):
+        self.print(f"\n{Theme.HEADER}=== {message} ==={Theme.RESET}\n")
+
+    def input(self, prompt: str, style: str = Theme.USER) -> str:
+        # 프롬프트에 스타일 입히기
+        return input(f"{style}{prompt}{Theme.RESET}")
 
     def clear(self):
         if sys.platform == "win32":

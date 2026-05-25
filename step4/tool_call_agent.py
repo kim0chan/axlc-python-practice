@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from common.llm.openai_client import OpenAiLlmClient
 from common.llm.models import ChatMessage
-from common.ui import console, print_message, print_info, loading_spinner, ConsoleColor
+from common.ui import console, print_message, print_info, loading_spinner, Theme
 from step3.meeting_service import MeetingService
 from step4.tool_registry import ToolRegistry, FunctionalTool
 from rich.panel import Panel
@@ -66,15 +66,15 @@ def process_agent_loop(messages: List[ChatMessage]):
 
         # 🌟 Case A: LLM이 도구 사용을 요청함 (Tool Call)
         if response_msg.tool_calls:
-            console.print(f"\n[bold magenta][Agent Thinking][/] 도구를 사용해야겠어...️")
+            console.print("[Agent Thinking] 도구를 사용해야겠어...", style=Theme.ASSISTANT)
 
             for tool_call in response_msg.tool_calls:
-                console.print(f"[bold yellow]>> Executing Tool:[/]{tool_call.function.name}[/]")
-                console.print(f"[dim]   Args: {tool_call.function.arguments}[/]")
+                console.print(f">> Executing Tool: {tool_call.function.name}", style=Theme.WARNING)
+                console.print(f"   Args: {tool_call.function.arguments}", style=Theme.SYSTEM)
 
                 # 2. 실제 도구 실행
                 result = tool_registry.handle_tool_call(tool_call)
-                console.print(f"[bold cyan]>> Result:[/] {result}")
+                console.print(f">> Result: {result}", style=Theme.INFO)
 
                 # 예약 성공 시 목록 다시 출력
                 if "SUCCESS" in result:
@@ -111,7 +111,7 @@ def main():
         meeting_service.get_meeting_list, "list_meetings", "현재 예약된 모든 미팅 목록을 조회합니다."
     ))
 
-    console.print("\n[bold cyan]=== [Step 4] Tool Call 에이전트: 스마트 비서 v2 ===[/]")
+    console.print_header("[Step 4] Tool Call 에이전트: 스마트 비서 v2")
     print_info("목표: LLM에게 직접 도구를 쥐어주고 스스로 문제를 해결하게 합니다.\n")
     
     print_meeting_list()
@@ -120,7 +120,7 @@ def main():
 
     while True:
         # 사용자 입력
-        user_input = console.input(f"[bold blue][User]: [/]")
+        user_input = console.input("[User]: ")
         
         if user_input.lower() == "exit":
             print_info("대화를 종료합니다. Bye!")

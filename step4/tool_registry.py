@@ -12,6 +12,28 @@ class Tool:
     def get_parameters_schema(self) -> Dict[str, Any]: pass
     def execute(self, arguments: Dict[str, Any]) -> Any: pass
 
+class McpTool(Tool):
+    """
+    MCP 서버에서 제공하는 도구를 래핑한 구현체
+    """
+    def __init__(self, client: Any, name: str, description: str, input_schema: Dict[str, Any]):
+        self.client = client
+        self.name = name
+        self.description = description
+        self.input_schema = input_schema
+
+    def get_name(self) -> str:
+        return self.name
+
+    def get_description(self) -> str:
+        return self.description
+
+    def get_parameters_schema(self) -> Dict[str, Any]:
+        return self.input_schema
+
+    def execute(self, arguments: Dict[str, Any]) -> Any:
+        return self.client.call_tool(self.name, arguments)
+
 class FunctionalTool(Tool):
     """
     함수(Callable)를 기반으로 자동 스키마 생성을 지원하는 도구 구현체

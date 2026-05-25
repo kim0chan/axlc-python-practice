@@ -16,11 +16,11 @@ def main():
 
     # 클라이언트 생성
     client = OpenAiLlmClient()
-    console.print(f"\n[bold cyan]=== [Step 0] LLM과 대화를 시작합니다 (종료하려면 'exit' 입력) ===[/]\n")
+    console.print_header("[Step 0] LLM과 대화를 시작합니다 (종료하려면 'exit' 입력)")
 
     while True:
         # 1. 사용자 입력 받기
-        user_input = console.input(f"[bold blue][User]: [/]")
+        user_input = console.input("[User]: ")
         
         if user_input.lower() == "exit":
             print_info("대화를 종료합니다. Bye!")
