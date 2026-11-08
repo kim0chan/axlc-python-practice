@@ -1,0 +1,29 @@
+meta {
+  name: "2. Noul (Urgency Check)"
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://api.typesafe.ai/v1/systemone
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{JEV_API_KEY}}
+}
+
+body:json {
+  {
+    "model": "jev-latest",
+    "state": "서버가 지금 죽었어! 당장 확인해줘!",
+    "questions": {
+      "is_urgent": {
+        "type": "noul",
+        "instructions": "이 메시지는 긴급한 조치가 필요한가요?"
+      }
+    }
+  }
+}

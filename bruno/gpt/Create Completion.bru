@@ -1,0 +1,72 @@
+meta {
+  name: Create Completion
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://api.openai.com/v1/chat/completions
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{API_KEY}}
+}
+
+body:json {
+  {
+    "model": "gpt-5-mini",
+    "messages": [
+      {
+        "role": "system",
+        "content": "당신은 유능한 미팅 예약 비서입니다."
+      },
+      {
+        "role": "user",
+        "content": "내일 오후 3시에 김철수 책임님이랑 회의 예약해줘."
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "create_meeting",
+          "description": "새로운 미팅 예약을 생성합니다.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string",
+                "description": "예약 날짜 (YYYY-MM-DD 형식)"
+              },
+              "time": {
+                "type": "string",
+                "description": "예약 시간 (HH:mm 형식)"
+              },
+              "attendees": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "참석자 명단"
+              }
+            },
+            "required": ["date", "time", "attendees"]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "list_meetings",
+          "description": "현재 예약된 미팅 목록을 조회합니다.",
+          "parameters": {
+            "type": "object",
+            "properties": {}
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto"
+  }
+}

@@ -1,0 +1,46 @@
+meta {
+  name: "4. Multi-Decision"
+  type: http
+  seq: 4
+}
+
+post {
+  url: https://api.typesafe.ai/v1/systemone
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{JEV_API_KEY}}
+}
+
+body:json {
+  {
+    "model": "jev-latest",
+    "state": "대표님, 이번 달 매출 보고서가 준비되었습니다. 검토 부탁드립니다.",
+    "questions": {
+      "intent": {
+        "type": "choice",
+        "instructions": "의도 분류",
+        "criteria": {
+          "report": "보고서 제출",
+          "ask": "질문"
+        }
+      },
+      "is_formal": {
+        "type": "noul",
+        "instructions": "격식 있는 말투인가요?"
+      },
+      "importance": {
+        "type": "score",
+        "instructions": "중요도 평가",
+        "criteria": [
+          "낮음",
+          "중간",
+          "높음"
+        ]
+      }
+    }
+  }
+}

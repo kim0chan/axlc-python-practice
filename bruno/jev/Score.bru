@@ -1,0 +1,34 @@
+meta {
+  name: "3. Score (Sentiment Analysis)"
+  type: http
+  seq: 3
+}
+
+post {
+  url: https://api.typesafe.ai/v1/systemone
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{JEV_API_KEY}}
+}
+
+body:json {
+  {
+    "model": "jev-latest",
+    "state": "배송이 너무 늦어서 정말 실망했어요. 다신 안 쓸 것 같네요.",
+    "questions": {
+      "sentiment": {
+        "type": "score",
+        "instructions": "고객의 불만 정도를 측정하세요.",
+        "criteria": [
+          "매우 만족",
+          "보통",
+          "매우 불만족"
+        ]
+      }
+    }
+  }
+}
