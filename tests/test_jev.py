@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from dotenv import load_dotenv
 
 # 프로젝트 루트를 path에 추가
@@ -7,6 +8,13 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from common.llm.jev_client import JevClient
 from common.ui import console, Theme
+
+def measure_latency(func, *args, **kwargs):
+    start = time.perf_counter()
+    result = func(*args, **kwargs)
+    end = time.perf_counter()
+    latency_ms = (end - start) * 1000
+    return result, latency_ms
 
 def test_jev_features():
     load_dotenv()
@@ -27,16 +35,16 @@ def test_jev_features():
         "email": "이메일 작성 및 확인",
         "chat": "단순 일상 대화"
     }
-    result_choice = client.choice(state_choice, "이 요청의 카테고리를 선택하세요.", criteria)
+    result_choice, latency = measure_latency(client.choice, state_choice, "이 요청의 카테고리를 선택하세요.", criteria)
     console.print(f"Input: {state_choice}")
-    console.print(f"Result: {result_choice}", style=Theme.SUCCESS)
+    console.print(f"Result: {result_choice} ({latency:.2f}ms)", style=Theme.SUCCESS)
 
     # 2. Noul Test: 이진 판단 (확률)
     console.print("\n[2] Noul API Test: 긴급도 판단", style="bold cyan")
     state_noul = "서버가 지금 죽었어! 당장 확인해줘!"
-    result_noul = client.noul(state_noul, "이 메시지는 긴급한 조치가 필요한가요?")
+    result_noul, latency = measure_latency(client.noul, state_noul, "이 메시지는 긴급한 조치가 필요한가요?")
     console.print(f"Input: {state_noul}")
-    console.print(f"Probability (Yes): {result_noul:.2f}", style=Theme.SUCCESS)
+    console.print(f"Probability (Yes): {result_noul:.2f} ({latency:.2f}ms)", style=Theme.SUCCESS)
 
     # 3. Score Test: 정성적 평가 (수치화)
     console.print("\n[3] Score API Test: 감정 분석 (점수)", style="bold cyan")
@@ -47,9 +55,9 @@ def test_jev_features():
         "매우 불만족"
     ]
     # Score는 0 ~ (n-1) 사이의 가중 평균 점수를 반환 (여기서는 0:만족, 2:불만족)
-    result_score = client.score(state_score, "고객의 불만 정도를 측정하세요.", rubric)
+    result_score, latency = measure_latency(client.score, state_score, "고객의 불만 정도를 측정하세요.", rubric)
     console.print(f"Input: {state_score}")
-    console.print(f"Score (0=만족, 2=불만족): {result_score:.2f}", style=Theme.SUCCESS)
+    console.print(f"Score (0=만족, 2=불만족): {result_score:.2f} ({latency:.2f}ms)", style=Theme.SUCCESS)
 
     # 4. Multi-Decision Test: 한 번에 여러 개 묻기
     console.print("\n[4] Multi-Decision Test: 병렬 판단", style="bold cyan")
@@ -62,9 +70,9 @@ def test_jev_features():
         "importance": JevQuestion(type="score", instructions="중요도 평가", criteria=["낮음", "중간", "높음"])
     }
     
-    multi_res = client.decide(state_multi, questions)
+    multi_res, latency = measure_latency(client.decide, state_multi, questions)
     console.print(f"Input: {state_multi}")
-    console.print(f"Answers: {multi_res.answers}", style=Theme.SUCCESS)
+    console.print(f"Answers: {multi_res.answers} ({latency:.2f}ms)", style=Theme.SUCCESS)
 
 if __name__ == "__main__":
     test_jev_features()
