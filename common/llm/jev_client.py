@@ -14,6 +14,7 @@ class JevClient:
         self.api_key = api_key or os.getenv("JEV_API_KEY")
         self.base_url = base_url
         self.endpoint = f"{self.base_url}/systemone"
+        self.session = requests.Session()
         
         if not self.api_key:
             raise ValueError("JEV_API_KEY is not set. Please provide it in .env file or constructor.")
@@ -33,7 +34,7 @@ class JevClient:
             "Authorization": f"Bearer {self.api_key}"
         }
 
-        response = requests.post(
+        response = self.session.post(
             self.endpoint,
             headers=headers,
             json=request_data.model_dump(exclude_none=True)

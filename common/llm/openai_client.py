@@ -19,6 +19,7 @@ class OpenAiLlmClient(LlmClient):
             
         self.api_url = api_url
         self.model_name = model_name
+        self.session = requests.Session()
 
     def ask(self, messages: List[ChatMessage]) -> ChatMessage:
         response = self.ask_with_tools(messages)
@@ -47,7 +48,7 @@ class OpenAiLlmClient(LlmClient):
                 "Authorization": f"Bearer {self.api_key}"
             }
             
-            response = requests.post(self.api_url, json=payload, headers=headers)
+            response = self.session.post(self.api_url, json=payload, headers=headers)
             
             if response.status_code != 200:
                 print(f"OpenAI API Error: {response.status_code} - {response.text}")
