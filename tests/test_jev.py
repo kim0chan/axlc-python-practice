@@ -28,7 +28,7 @@ def test_jev_features():
     console.print_header("Jev (System One) API 기능 테스트")
 
     # 1. Choice Test: 의도 분류
-    console.print("\n[1] Choice API Test: 의도 분류", style="bold cyan")
+    console.print("\n[1] Choice API Test: 의도 분류", style=Theme.HEADER)
     state_choice = "내일 오전 10시에 회의실 A 예약해줄래?"
     criteria = {
         "meeting": "회의 예약 및 일정 관리",
@@ -40,14 +40,14 @@ def test_jev_features():
     console.print(f"Result: {result_choice} ({latency:.2f}ms)", style=Theme.SUCCESS)
 
     # 2. Noul Test: 이진 판단 (확률)
-    console.print("\n[2] Noul API Test: 긴급도 판단", style="bold cyan")
+    console.print("\n[2] Noul API Test: 긴급도 판단", style=Theme.HEADER)
     state_noul = "서버가 지금 죽었어! 당장 확인해줘!"
     result_noul, latency = measure_latency(client.noul, state_noul, "이 메시지는 긴급한 조치가 필요한가요?")
     console.print(f"Input: {state_noul}")
     console.print(f"Probability (Yes): {result_noul:.2f} ({latency:.2f}ms)", style=Theme.SUCCESS)
 
     # 3. Score Test: 정성적 평가 (수치화)
-    console.print("\n[3] Score API Test: 감정 분석 (점수)", style="bold cyan")
+    console.print("\n[3] Score API Test: 감정 분석 (점수)", style=Theme.HEADER)
     state_score = "배송이 너무 늦어서 정말 실망했어요. 다신 안 쓸 것 같네요."
     rubric = [
         "매우 만족",
@@ -60,7 +60,7 @@ def test_jev_features():
     console.print(f"Score (0=만족, 2=불만족): {result_score:.2f} ({latency:.2f}ms)", style=Theme.SUCCESS)
 
     # 4. Multi-Decision Test: 한 번에 여러 개 묻기
-    console.print("\n[4] Multi-Decision Test: 병렬 판단", style="bold cyan")
+    console.print("\n[4] Multi-Decision Test: 병렬 판단", style=Theme.HEADER)
     from common.llm.jev_models import JevQuestion
     
     state_multi = "대표님, 이번 달 매출 보고서가 준비되었습니다. 검토 부탁드립니다."
